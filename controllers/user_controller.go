@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"errors"
-	"github.com/WilliamsStudentsOnline/wso-backend/models"
+	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"

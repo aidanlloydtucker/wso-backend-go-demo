@@ -1,4 +1,4 @@
-module github.com/WilliamsStudentsOnline/wso-backend
+module github.com/aidanlloydtucker/wso-backend-go-demo
 
 go 1.12
 

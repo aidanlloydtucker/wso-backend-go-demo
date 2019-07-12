@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"time"
 
-	"github.com/WilliamsStudentsOnline/wso-backend/models"
+	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 )
 
 var identityKey = "id"

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/WilliamsStudentsOnline/wso-backend/models"
+	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	"github.com/jinzhu/gorm"
 	"log"
 )
