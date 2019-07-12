@@ -1,7 +1,7 @@
 package models
 
 //UserModel ...
-type UserModel struct{
+type UserModel struct {
 	BaseModel
 }
 

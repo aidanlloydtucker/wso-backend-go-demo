@@ -12,7 +12,7 @@ import (
 var identityKey = "id"
 
 type Login struct {
-	UnixID string `form:"unix_id" json:"unix_id" binding:"required"`
+	UnixID   string `form:"unix_id" json:"unix_id" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
@@ -60,8 +60,8 @@ func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err 
 		},
 		Unauthorized: func(c *gin.Context, statusCode int, errorMsg string) {
 			c.JSON(statusCode, gin.H{
-				"status":    statusCode,
-				"error": errorMsg,
+				"status": statusCode,
+				"error":  errorMsg,
 			})
 		},
 		// TokenLookup is a string in the form of "<source>:<name>" that is used

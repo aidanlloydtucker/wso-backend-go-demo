@@ -44,7 +44,7 @@ func main() {
 	router.Use(authMiddleware.MiddlewareFunc())
 
 	// Middleware to set the user and user id with the context
-	router.Use(func (c *gin.Context) {
+	router.Use(func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
 		userID := uint(claims["id"].(float64))
 		user := models.NewUserWithID(userID)

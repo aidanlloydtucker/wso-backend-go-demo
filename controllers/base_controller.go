@@ -6,24 +6,24 @@ import (
 	"net/http"
 )
 
-type BaseController struct {}
+type BaseController struct{}
 
 type BaseResponse struct {
-	Status int `json:"status"`
-	Data interface{} `json:"data,omitempty"`
-	Error *RespError `json:"error,omitempty"`
+	Status int         `json:"status"`
+	Data   interface{} `json:"data,omitempty"`
+	Error  *RespError  `json:"error,omitempty"`
 }
 
 type RespError struct {
-	ErrorCode int `json:"error_code"`
-	Message string `json:"message"`
+	ErrorCode int    `json:"error_code"`
+	Message   string `json:"message"`
 }
 
 func (BaseController) RespondOK(data interface{}, c *gin.Context) {
 	c.JSON(http.StatusOK, BaseResponse{
 		Status: http.StatusOK,
-		Data: data,
-		Error: nil,
+		Data:   data,
+		Error:  nil,
 	})
 }
 
@@ -33,7 +33,7 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 			Status: http.StatusNotFound,
 			Error: &RespError{
 				ErrorCode: http.StatusNotFound,
-				Message: err.Error(),
+				Message:   err.Error(),
 			},
 		})
 
@@ -44,7 +44,7 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 		Status: code,
 		Error: &RespError{
 			ErrorCode: code,
-			Message: err.Error(),
+			Message:   err.Error(),
 		},
 	})
 }

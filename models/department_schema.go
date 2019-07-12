@@ -8,4 +8,3 @@ type Department struct {
 func (*Department) TableName() string {
 	return "departments"
 }
-

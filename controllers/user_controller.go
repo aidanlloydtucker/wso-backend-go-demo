@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-type UserController struct{
+type UserController struct {
 	BaseController
 	userModel *models.UserModel
 }
@@ -51,7 +51,6 @@ func (t *UserController) GetUser(c *gin.Context) {
 			return
 		}
 	}
-
 
 	var user models.User
 	err := t.userModel.GetUserByID(uint(userID), &user)
