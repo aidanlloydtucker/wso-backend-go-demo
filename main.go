@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/aidanlloydtucker/wso-backend-go-demo/config"
+	user_controller "github.com/aidanlloydtucker/wso-backend-go-demo/controllers/user/generated"
+	user_api "github.com/aidanlloydtucker/wso-backend-go-demo/controllers/user"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-
-	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 )
 
 func main() {
@@ -59,7 +59,7 @@ func main() {
 		v1.GET("/auth/refresh_token", authMiddleware.RefreshHandler)
 
 		userGroup := v1.Group("/user")
-		userControl := controllers.NewUserController(db)
+		userControl := user_controller.NewUserController(user_api.NewController(db))
 		userGroup.GET("/", userControl.FetchAllUsers)
 		userGroup.GET("/:user_id", userControl.GetUser)
 	}
