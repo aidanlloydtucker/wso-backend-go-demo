@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/hyper-schema#",
+  "$ref": "https://wso.williams.edu/api/v1/users",
+  "type": "object",
+  "base": "https://wso.williams.edu/api/v1/",
+  "properties": {
+    "user": {"$ref": "#/definitions/user"}
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "users",
+      "targetSchema": {"$ref": "#"}
+    },
+    {
+      "rel": "self",
+      "href": "users/{id}",
+      "templateRequired": ["id"],
+      "targetSchema": {"$ref": "#"}
+    }
+  ],
+  "definitions": {
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "readOnly": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "cell_phone": {
+      "type": "string"
+    },
+    "campus_phone_ext": {
+      "type": "string"
+    },
+    "unix_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/definitions/id"},
+        "name": {"$ref": "#/definitions/name"},
+        "cell_phone": {"$ref": "#/definitions/cell_phone"},
+        "campus_phone_ext": {"$ref": "#/definitions/campus_phone_ext"},
+        "unix_id": {"$ref": "#/definitions/unix_id"},
+        "title": {"$ref": "#/definitions/title"}
+      },
+      "required": [
+        "id",
+        "unix_id"
+      ]
+    }
+  }
+}
