@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/jinzhu/gorm"
 	"time"
+	"github.com/thoas/go-funk"
 )
 
 type BaseModel struct {
@@ -14,4 +15,12 @@ type BaseSchema struct {
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `sql:"index" json:"-"`
+}
+
+func MapPermit(m map[string]interface{}, permits ...string) {
+	for key := range m {
+		if !funk.ContainsString(permits, key) {
+			delete(m, key)
+		}
+	}
 }

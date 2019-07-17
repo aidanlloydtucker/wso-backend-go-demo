@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -60,4 +61,34 @@ func (t *UserController) GetUser(c *gin.Context) {
 	}
 
 	t.RespondOK(user, c)
+}
+
+func (t *UserController) UpdateUser(c *gin.Context) {
+	userID, err := GetUIntParam("user_id", c)
+	if err != nil {
+		t.RespondError(http.StatusBadRequest, errors.New("could not parse user id"), c)
+		return
+	}
+
+	if userID != GetUserID(c) {
+		t.RespondError(http.StatusForbidden, errors.New("can only update self"), c)
+		return
+	}
+
+	var update map[string]interface{}
+	err = c.ShouldBind(&update)
+	if err != nil {
+		t.RespondError(http.StatusBadRequest, errors.New("could not parse user id"), c)
+		return
+	}
+
+	fmt.Printf("%+v\n", update)
+
+	err = t.userModel.UpdateUser(userID, update)
+	if err != nil {
+		t.RespondError(http.StatusInternalServerError, err, c)
+		return
+	}
+
+	t.RespondOK(nil, c)
 }

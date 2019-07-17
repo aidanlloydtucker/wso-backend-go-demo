@@ -62,6 +62,7 @@ func main() {
 		userControl := controllers.NewUserController(db)
 		userGroup.GET("/", userControl.FetchAllUsers)
 		userGroup.GET("/:user_id", userControl.GetUser)
+		userGroup.PUT("/:user_id", userControl.UpdateUser)
 	}
 
 	// Would change this to be more production-friendly in real life. I'd use something like endless to keep

@@ -6,15 +6,18 @@ type UserModel struct {
 }
 
 func (m *UserModel) GetAllUsers(u *[]User) (err error) {
-	if err = m.DB.Set("gorm:auto_preload", true).Find(u).Error; err != nil {
-		return err
-	}
-	return nil
+	err = m.DB.Find(u).Error
+	return
 }
 
 func (m *UserModel) GetUserByID(id uint, u *User) (err error) {
-	if err = m.DB.Set("gorm:auto_preload", true).Where(NewUserWithID(id)).First(u).Error; err != nil {
-		return err
-	}
-	return nil
+	//.Set("gorm:auto_preload", true)
+	err = m.DB.Where(NewUserWithID(id)).First(u).Error
+	return
+}
+
+func (m *UserModel) UpdateUser(id uint, update map[string]interface{}) (err error) {
+	MapPermit(update, "visible", "dorm_visible", "home_visible", "pronoun", "off_cycle")
+	err = m.DB.Model(NewUserWithID(id)).Updates(update).Error
+	return
 }

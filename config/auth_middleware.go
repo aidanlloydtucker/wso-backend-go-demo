@@ -24,20 +24,37 @@ func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err 
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
 		IdentityKey: identityKey,
+		// Called on login to create JWT payload
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*models.User); ok {
+				scope := []string{ScopeReadAll}
+
+				if v.ID > 0 {
+					scope = append(scope, ScopeWriteSelf)
+				}
+				if v.Admin {
+					scope = append(scope, ScopeAdminAll)
+					scope = append(scope, ScopeAdminFactrak)
+				}
+				if v.FactrakAdmin {
+					scope = append(scope, ScopeAdminFactrak)
+				}
+
 				return jwt.MapClaims{
 					identityKey: v.ID,
+					"scope": scope,
 				}
 			}
 			return jwt.MapClaims{}
 		},
+		// Called every request to get user
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			user := new(models.User)
 			user.ID = uint(claims["id"].(float64))
 			return user
 		},
+		// Called on login to authenticate
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals Login
 			if err := c.ShouldBind(&loginVals); err != nil {
@@ -63,6 +80,10 @@ func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err 
 				"status": statusCode,
 				"error":  errorMsg,
 			})
+		},
+		// Called every request
+		Authorizator: func(data interface{}, c *gin.Context) bool {
+			return true
 		},
 		// TokenLookup is a string in the form of "<source>:<name>" that is used
 		// to extract token from the request.

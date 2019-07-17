@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"strconv"
 )
 
 type BaseController struct{}
@@ -29,7 +30,7 @@ func (BaseController) RespondOK(data interface{}, c *gin.Context) {
 
 func (BaseController) RespondError(code int, err error, c *gin.Context) {
 	if gorm.IsRecordNotFoundError(err) {
-		c.JSON(http.StatusNotFound, BaseResponse{
+		c.AbortWithStatusJSON(http.StatusNotFound, BaseResponse{
 			Status: http.StatusNotFound,
 			Error: &RespError{
 				ErrorCode: http.StatusNotFound,
@@ -40,11 +41,25 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 		return
 	}
 
-	c.JSON(code, BaseResponse{
+	c.AbortWithStatusJSON(code, BaseResponse{
 		Status: code,
 		Error: &RespError{
 			ErrorCode: code,
 			Message:   err.Error(),
 		},
 	})
+}
+
+func GetUIntParam(key string, ctx *gin.Context) (uint, error) {
+	param := ctx.Param(key)
+	paramInt, err := strconv.Atoi(param)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(paramInt), nil
+}
+
+func GetUserID(ctx *gin.Context) uint {
+	return (ctx.MustGet("user_id")).(uint)
 }
