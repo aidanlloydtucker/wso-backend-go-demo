@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 type BaseController struct{}
@@ -43,7 +44,7 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 		},
 	})
 
-	c.Error(err)
+	_ = c.Error(err)
 }
 
 func GetUIntParam(key string, ctx *gin.Context) (uint, error) {
