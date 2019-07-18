@@ -7,14 +7,17 @@ import (
 )
 
 import _ "github.com/jinzhu/gorm/dialects/sqlite"
+import _ "github.com/jinzhu/gorm/dialects/mysql"
 
-func LoadDatabase() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "test.db")
+func LoadDatabase(cfg *Config) *gorm.DB {
+	db, err := gorm.Open(cfg.DatabaseType, cfg.DatabaseArgs)
 	if err != nil {
 		log.Fatalln("failed to connect database")
 	}
 
-	db.LogMode(true)
+	if cfg.IsDevelopment() || cfg.IsTest() {
+		db.LogMode(true)
+	}
 
 	// Would use a better migration library in real version
 	err = db.AutoMigrate(

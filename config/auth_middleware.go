@@ -11,21 +11,19 @@ import (
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 )
 
-var identityKey = "id"
-
 type Login struct {
 	UnixID   string `form:"unix_id" json:"unix_id" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err error) {
+func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err error) {
 	// the jwt middleware
 	authMiddleware, err = jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "test zone",
-		Key:         []byte("secret key"),
+		Realm:       cfg.JWTRealm,
+		Key:         []byte(cfg.JWTSecretKey),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
+		IdentityKey: "id",
 		// Called on login to create JWT payload
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*models.User); ok {
@@ -43,7 +41,7 @@ func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err 
 				}
 
 				return jwt.MapClaims{
-					identityKey: v.ID,
+					"id": v.ID,
 					"scope": scope,
 				}
 			}

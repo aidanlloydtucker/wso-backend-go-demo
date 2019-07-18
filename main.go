@@ -5,21 +5,38 @@ import (
 	"github.com/aidanlloydtucker/wso-backend-go-demo/config"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"github.com/fvbock/endless"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 )
 
 func main() {
+	/* CONFIG */
+	cfg, err := config.GetConfig()
+	if err != nil {
+		log.Fatalln("Config Error: " + err.Error())
+	}
+
 	/* DATABASE */
-	db := config.LoadDatabase()
+	db := config.LoadDatabase(cfg)
 	defer config.CloseDatabase(db)
 
 	/* SERVER */
 	r := gin.New()
+
+	switch cfg.GinMode {
+	case "development":
+		gin.SetMode(gin.DebugMode)
+	case "test":
+		gin.SetMode(gin.TestMode)
+	case "production":
+		gin.SetMode(gin.ReleaseMode)
+	default:
+		gin.SetMode(gin.DebugMode)
+	}
 
 	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
 	// By default gin.DefaultWriter = os.Stdout
@@ -29,7 +46,7 @@ func main() {
 	r.Use(gin.Recovery())
 
 	// Build JWT auth middleware
-	authMiddleware, err := config.LoadAuthMiddleware(db)
+	authMiddleware, err := config.LoadAuthMiddleware(cfg, db)
 	if err != nil {
 		log.Fatalln("JWT Error: " + err.Error())
 	}
@@ -74,5 +91,8 @@ func main() {
 
 	// Would change this to be more production-friendly in real life. I'd use something like endless to keep
 	// the server running even when it crashes
-	endless.ListenAndServe(":8080", r) // listen and serve on 0.0.0.0:8080
+	err = endless.ListenAndServe(":8080", r) // listen and serve on 0.0.0.0:8080
+	if err != nil {
+		log.Fatalln("Server Error: " + err.Error())
+	}
 }

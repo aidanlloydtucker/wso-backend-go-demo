@@ -1,0 +1,5 @@
+env: development
+database_type: sqlite3
+database_args: test.db
+jwt_realm: wso-local-dev
+jwt_secret_key: secret key
