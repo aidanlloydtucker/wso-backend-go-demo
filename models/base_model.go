@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	funk "github.com/thoas/go-funk"
 )
 
 type BaseModel struct {

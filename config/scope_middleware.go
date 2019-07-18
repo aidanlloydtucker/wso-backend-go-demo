@@ -7,6 +7,7 @@ import (
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+	funk "github.com/thoas/go-funk"
 )
 
 // The current scopes
@@ -34,7 +35,7 @@ func RequireScopes(scopes ...string) func(c *gin.Context) {
 		// Check if the scope is valid
 		authed := false
 		for _, scope := range scopes {
-			if authed = containsScope(jwtScopes, scope); authed {
+			if authed = funk.ContainsString(jwtScopes, scope); authed {
 				break
 			}
 		}
@@ -48,13 +49,4 @@ func RequireScopes(scopes ...string) func(c *gin.Context) {
 
 		c.Next()
 	}
-}
-
-func containsScope(slice []string, scope string) bool {
-	for _, elem := range slice {
-		if elem == scope {
-			return true
-		}
-	}
-	return false
 }
