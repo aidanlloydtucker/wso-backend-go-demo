@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -76,10 +78,7 @@ func LoadAuthMiddleware(db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err 
 			return &user, nil
 		},
 		Unauthorized: func(c *gin.Context, statusCode int, errorMsg string) {
-			c.JSON(statusCode, gin.H{
-				"status": statusCode,
-				"error":  errorMsg,
-			})
+			controllers.Base.RespondError(statusCode, errors.New(errorMsg), c)
 		},
 		// Called every request
 		Authorizator: func(data interface{}, c *gin.Context) bool {

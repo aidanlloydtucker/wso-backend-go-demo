@@ -1,12 +1,14 @@
 package main
 
 import (
+	"errors"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/config"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"github.com/fvbock/endless"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 )
@@ -18,7 +20,12 @@ func main() {
 
 	/* SERVER */
 	r := gin.New()
+
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
 	r.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.Recovery())
 
 	// Build JWT auth middleware
@@ -36,7 +43,7 @@ func main() {
 	r.NoRoute(authMiddleware.MiddlewareFunc(), func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
 		log.Printf("NoRoute claims: %#v\n", claims)
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "error": "Page not found"})
+		controllers.Base.RespondError(http.StatusNotFound, errors.New("page not found"), c)
 	})
 
 	// Wrap everything else in authentication
@@ -67,5 +74,5 @@ func main() {
 
 	// Would change this to be more production-friendly in real life. I'd use something like endless to keep
 	// the server running even when it crashes
-	r.Run() // listen and serve on 0.0.0.0:8080
+	endless.ListenAndServe(":8080", r) // listen and serve on 0.0.0.0:8080
 }

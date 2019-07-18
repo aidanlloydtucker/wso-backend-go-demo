@@ -36,7 +36,7 @@ func RequireScopes(scopes ...string) func(c *gin.Context) {
 		}
 
 		if !authed {
-			controllers.BaseController{}.RespondError(
+			controllers.Base.RespondError(
 				http.StatusForbidden, errors.New("user does not have scope authorization"), c)
 			c.Abort()
 			return

@@ -28,17 +28,11 @@ func (BaseController) RespondOK(data interface{}, c *gin.Context) {
 	})
 }
 
+var Base = BaseController{}
+
 func (BaseController) RespondError(code int, err error, c *gin.Context) {
 	if gorm.IsRecordNotFoundError(err) {
-		c.AbortWithStatusJSON(http.StatusNotFound, BaseResponse{
-			Status: http.StatusNotFound,
-			Error: &RespError{
-				ErrorCode: http.StatusNotFound,
-				Message:   err.Error(),
-			},
-		})
-
-		return
+		code = http.StatusNotFound
 	}
 
 	c.AbortWithStatusJSON(code, BaseResponse{
@@ -48,6 +42,8 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 			Message:   err.Error(),
 		},
 	})
+
+	c.Error(err)
 }
 
 func GetUIntParam(key string, ctx *gin.Context) (uint, error) {
