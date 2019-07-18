@@ -2,18 +2,19 @@ package config
 
 import (
 	"flag"
-	"gopkg.in/yaml.v2"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	Env string `yaml:"env"`
+	Env          string `yaml:"env"`
 	DatabaseType string `yaml:"database_type"`
 	DatabaseArgs string `yaml:"database_args"`
-	JWTRealm string `yaml:"jwt_realm"`
+	JWTRealm     string `yaml:"jwt_realm"`
 	JWTSecretKey string `yaml:"jwt_secret_key"`
-	GinMode string `yaml:"gin_mode"`
+	GinMode      string `yaml:"gin_mode"`
 }
 
 func (c *Config) IsEnv(env string) bool {
@@ -42,7 +43,7 @@ func GetConfig() (*Config, error) {
 	flag.Parse()
 
 	if configPath == "" {
-		configPath += "config/environment/" + env + ".yaml"
+		configPath += "config/environment/" + env + ".yml"
 	}
 
 	configPath, err := filepath.Abs(configPath)

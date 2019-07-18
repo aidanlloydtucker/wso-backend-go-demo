@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	ScopeAdminAll = "admin:all"
-	ScopeReadAll = "read:all"
-	ScopeWriteSelf = "write:self"
-	ScopeReadEphcatch = "read:ephcatch"
+	ScopeAdminAll      = "admin:all"
+	ScopeReadAll       = "read:all"
+	ScopeWriteSelf     = "write:self"
+	ScopeReadEphcatch  = "read:ephcatch"
 	ScopeWriteEphcatch = "write:ephcatch"
-	ScopeAdminFactrak = "admin:factrak"
+	ScopeAdminFactrak  = "admin:factrak"
 )
 
 func RequireScopes(scopes ...string) func(c *gin.Context) {
@@ -31,7 +31,7 @@ func RequireScopes(scopes ...string) func(c *gin.Context) {
 		authed := false
 		for _, scope := range scopes {
 			if authed = containsScope(jwtScopes, scope); authed {
-				break;
+				break
 			}
 		}
 

@@ -2,8 +2,8 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"time"
 	"github.com/thoas/go-funk"
+	"time"
 )
 
 type BaseModel struct {

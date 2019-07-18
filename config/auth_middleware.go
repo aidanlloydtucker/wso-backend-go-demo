@@ -41,7 +41,7 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 				}
 
 				return jwt.MapClaims{
-					"id": v.ID,
+					"id":    v.ID,
 					"scope": scope,
 				}
 			}

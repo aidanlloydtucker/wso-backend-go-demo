@@ -1,13 +1,13 @@
 package config
 
 import (
+	"log"
+
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	"github.com/jinzhu/gorm"
-	"log"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
-
-import _ "github.com/jinzhu/gorm/dialects/sqlite"
-import _ "github.com/jinzhu/gorm/dialects/mysql"
 
 func LoadDatabase(cfg *Config) *gorm.DB {
 	db, err := gorm.Open(cfg.DatabaseType, cfg.DatabaseArgs)
