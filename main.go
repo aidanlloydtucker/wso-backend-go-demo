@@ -2,13 +2,14 @@ package main
 
 import (
 	"errors"
+	"log"
+	"net/http"
+
 	"github.com/aidanlloydtucker/wso-backend-go-demo/config"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 )
@@ -80,8 +81,10 @@ func main() {
 	// Actual API routing
 	v1 := router.Group("/api/v1")
 	{
+		// Authentication for refresh user
 		v1.GET("/auth/refresh_token", authMiddleware.RefreshHandler)
 
+		// User API group
 		userGroup := v1.Group("/user")
 		userControl := controllers.NewUserController(db)
 		userGroup.GET("/", userControl.FetchAllUsers)

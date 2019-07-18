@@ -1,9 +1,9 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
-	"github.com/thoas/go-funk"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type BaseModel struct {
@@ -17,6 +17,7 @@ type BaseSchema struct {
 	DeletedAt *time.Time `sql:"index" json:"-"`
 }
 
+// Given a map, delete all keys not in the passed permit list
 func MapPermit(m map[string]interface{}, permits ...string) {
 	for key := range m {
 		if !funk.ContainsString(permits, key) {

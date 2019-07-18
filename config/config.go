@@ -8,6 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Our configuration
 type Config struct {
 	Env          string `yaml:"env"`
 	DatabaseType string `yaml:"database_type"`
@@ -17,6 +18,7 @@ type Config struct {
 	GinMode      string `yaml:"gin_mode"`
 }
 
+// Check what environment our config is in
 func (c *Config) IsEnv(env string) bool {
 	return c.Env == env
 }
@@ -33,19 +35,23 @@ func (c *Config) IsProduction() bool {
 	return c.IsEnv("production")
 }
 
+// Get the config and parse any info
 func GetConfig() (*Config, error) {
 	var env string
 	var configPath string
 
+	// Command-line flags
 	flag.StringVar(&env, "env", "development", "environment of server")
 	flag.StringVar(&configPath, "config", "", "path to config file")
 
 	flag.Parse()
 
+	// Default config path
 	if configPath == "" {
 		configPath += "config/environment/" + env + ".yml"
 	}
 
+	// Get the config file and decode it
 	configPath, err := filepath.Abs(configPath)
 	if err != nil {
 		return nil, err

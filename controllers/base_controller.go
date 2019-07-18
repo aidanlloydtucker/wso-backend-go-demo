@@ -21,6 +21,7 @@ type RespError struct {
 	Message   string `json:"message"`
 }
 
+// Respond to a request with an OK and some data
 func (BaseController) RespondOK(data interface{}, c *gin.Context) {
 	c.JSON(http.StatusOK, BaseResponse{
 		Status: http.StatusOK,
@@ -29,8 +30,10 @@ func (BaseController) RespondOK(data interface{}, c *gin.Context) {
 	})
 }
 
+// Base controller object for outside packages to call to access methods
 var Base = BaseController{}
 
+// Respond to request with an error and abort
 func (BaseController) RespondError(code int, err error, c *gin.Context) {
 	if gorm.IsRecordNotFoundError(err) {
 		code = http.StatusNotFound
@@ -47,6 +50,7 @@ func (BaseController) RespondError(code int, err error, c *gin.Context) {
 	_ = c.Error(err)
 }
 
+// Get a parameter that is a uint
 func GetUIntParam(key string, ctx *gin.Context) (uint, error) {
 	param := ctx.Param(key)
 	paramInt, err := strconv.Atoi(param)
@@ -57,6 +61,7 @@ func GetUIntParam(key string, ctx *gin.Context) (uint, error) {
 	return uint(paramInt), nil
 }
 
+// Get the User ID from context store
 func GetUserID(ctx *gin.Context) uint {
 	return (ctx.MustGet("user_id")).(uint)
 }

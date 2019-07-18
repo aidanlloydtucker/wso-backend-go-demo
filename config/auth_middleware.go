@@ -2,11 +2,12 @@ package config
 
 import (
 	"errors"
+	"time"
+
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"time"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 )
@@ -17,7 +18,7 @@ type Login struct {
 }
 
 func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err error) {
-	// the jwt middleware
+	// The JWT middleware
 	authMiddleware, err = jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       cfg.JWTRealm,
 		Key:         []byte(cfg.JWTSecretKey),
@@ -26,7 +27,9 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 		IdentityKey: "id",
 		// Called on login to create JWT payload
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			// We take the data (which is a User) and create the payload
 			if v, ok := data.(*models.User); ok {
+				// Set scopes here
 				scope := []string{ScopeReadAll}
 
 				if v.ID > 0 {
@@ -40,6 +43,7 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 					scope = append(scope, ScopeAdminFactrak)
 				}
 
+				// This is the final payload
 				return jwt.MapClaims{
 					"id":    v.ID,
 					"scope": scope,
@@ -47,7 +51,7 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 			}
 			return jwt.MapClaims{}
 		},
-		// Called every request to get user
+		// Called every request to get user's id
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			user := new(models.User)
@@ -66,6 +70,7 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 			// Do LDAP Authentication HERE
 			_ = password
 
+			// Currently, we just check if the user exists in our DB, no LDAP yet
 			var user models.User
 			// In real version, do FirstOrCreate
 			err := db.Where(&models.User{UnixID: unixID}).First(&user).Error
@@ -75,10 +80,11 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 
 			return &user, nil
 		},
+		// What to do when a JWT is unauthorized
 		Unauthorized: func(c *gin.Context, statusCode int, errorMsg string) {
 			controllers.Base.RespondError(statusCode, errors.New(errorMsg), c)
 		},
-		// Called every request
+		// Called every request; ignore this for now
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			return true
 		},

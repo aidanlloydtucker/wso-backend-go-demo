@@ -10,6 +10,7 @@ import (
 )
 
 func LoadDatabase(cfg *Config) *gorm.DB {
+	// Database params passed by config
 	db, err := gorm.Open(cfg.DatabaseType, cfg.DatabaseArgs)
 	if err != nil {
 		log.Fatalln("failed to connect database")
@@ -30,6 +31,7 @@ func LoadDatabase(cfg *Config) *gorm.DB {
 	return db
 }
 
+// Safely closes DB when done
 func CloseDatabase(db *gorm.DB) {
 	if err := db.Close(); err != nil {
 		log.Fatalln(err)
