@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/config"
+	migrate "github.com/aidanlloydtucker/wso-backend-go-demo/db"
 	"github.com/aidanlloydtucker/wso-backend-go-demo/models"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/fvbock/endless"
@@ -24,6 +25,12 @@ func main() {
 	/* DATABASE */
 	db := config.LoadDatabase(cfg)
 	defer config.CloseDatabase(db)
+
+	/* Database Migrations */
+	err = migrate.MigrateDB(db)
+	if err != nil {
+		log.Fatalln("Migration Error: " + err.Error())
+	}
 
 	/* SERVER */
 	r := gin.New()

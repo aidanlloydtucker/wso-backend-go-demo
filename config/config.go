@@ -10,12 +10,12 @@ import (
 
 // Our configuration
 type Config struct {
-	Env          string `yaml:"env"`
-	DatabaseType string `yaml:"database_type"`
-	DatabaseArgs string `yaml:"database_args"`
-	JWTRealm     string `yaml:"jwt_realm"`
-	JWTSecretKey string `yaml:"jwt_secret_key"`
-	GinMode      string `yaml:"gin_mode"`
+	Env            string `yaml:"env"`
+	DatabaseType   string `yaml:"database_type"`
+	DatabaseArgs   string `yaml:"database_args"`
+	JWTRealm       string `yaml:"jwt_realm"`
+	JWTSecretKey   string `yaml:"jwt_secret_key"`
+	GinMode        string `yaml:"gin_mode"`
 }
 
 // Check what environment our config is in
@@ -48,7 +48,7 @@ func GetConfig() (*Config, error) {
 
 	// Default config path
 	if configPath == "" {
-		configPath += "config/environment/" + env + ".yml"
+		configPath = filepath.Join("config", "environment", env+".yml")
 	}
 
 	// Get the config file and decode it
