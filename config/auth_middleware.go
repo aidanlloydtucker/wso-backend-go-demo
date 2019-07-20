@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"github.com/aidanlloydtucker/wso-backend-go-demo/lib"
 	"time"
 
 	"github.com/aidanlloydtucker/wso-backend-go-demo/controllers"
@@ -15,6 +16,7 @@ import (
 type Login struct {
 	UnixID   string `form:"unix_id" json:"unix_id" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
+	Local bool `form:"local" json:"local"`
 }
 
 func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMiddleware, err error) {
@@ -64,6 +66,16 @@ func LoadAuthMiddleware(cfg *Config, db *gorm.DB) (authMiddleware *jwt.GinJWTMid
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
+
+			if loginVals.Local {
+				if lib.OnCampusIP(c.ClientIP()) {
+					user := models.NewUserWithID(0)
+					return &user, nil
+				} else {
+					return nil, errors.New("could not verify on-campus IP")
+				}
+			}
+
 			unixID := loginVals.UnixID
 			password := loginVals.Password
 
